@@ -1,0 +1,110 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Runtime.ExceptionServices;
+
+namespace AlcoholCalculator
+{
+    class Drink
+    {
+        public string drinkName;
+        public double alcoholPercent;
+        public int drinkID;
+
+        public string DrinkPrint()
+        {
+            string drinkType = $"{drinkName} {alcoholPercent} % -- ID: {drinkID}";
+            return drinkType;
+        }
+
+    }
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            List<Drink> drinkList = new List<Drink>();
+            List<Drink> consumedList = new List<Drink>();
+
+            drinkList.Add(new Drink() { drinkName = "Beer", alcoholPercent = 4.8, drinkID = 1 });
+            drinkList.Add(new Drink() { drinkName = "Wine", alcoholPercent = 12, drinkID = 2 });
+
+            foreach(var Drink in drinkList)
+            {
+                Console.WriteLine(Drink.DrinkPrint());
+            }
+
+            
+            do
+            {
+                var gotID = GetID(drinkList);
+
+                foreach (var Drink in drinkList)
+                {
+                    if (gotID == Drink.drinkID)
+                    {
+                        consumedList.Add(Drink);
+                    }
+
+                }
+
+                Console.WriteLine("Need any more? (y/n)");
+
+            } while (Console.ReadLine() == "y");
+
+            var boozeList = ConsumedSum(consumedList);
+            Console.WriteLine("Total consumption: ");
+
+            foreach (var consumed in boozeList)
+            {
+                var booze = consumedList.First(p => p.drinkID == consumed.Key);
+                Console.WriteLine($"Drink name:{booze.drinkName}   How many: {consumed.Value}");
+            }
+
+            //kalkulátor -- mennyiség x alkohol x 0.8 = x  ---> x/ súly = ezrelék  ---> óránként 0.15 ezrelék bontódik le
+            var youClear = Counting();
+            Console.WriteLine("You are clear after: {0} hours.", youClear);
+            Console.WriteLine("Thank you bye.");
+            Console.ReadKey();
+        }
+        static double Counting()
+        {
+            int weight = Convert.ToInt32(Console.ReadLine());
+            double perThousand;
+            double alc = consumed.Value * alcoholPercent * 0.8;
+            perThousand = alc / weight;
+            double clear = perThousand / 0.15;
+            return clear;
+        }
+
+        static int GetID(List<Drink> drinkList)
+        {
+            
+            Console.WriteLine("Give the ID of the consumed drink");
+            int consumedID = Convert.ToInt32(Console.ReadLine());
+            return consumedID;
+        }
+
+        static string ConsumedList(List<Drink> consumedList)
+        {
+            Console.WriteLine("Nice. You have consumed:");
+            foreach (var Drink in consumedList)
+            {
+                Console.WriteLine($"{Drink.drinkName} ID: {Drink.drinkID}");
+            }
+            return null;
+        }
+
+        static Dictionary<int, int> ConsumedSum(List<Drink> consumedList)
+        {
+            var drinkedList = new Dictionary<int, int>();
+            var beers = consumedList.Where(i => i.drinkID == 1);
+            drinkedList.Add(1, beers.Count());
+            var wines = consumedList.Where(i => i.drinkID == 2);
+            drinkedList.Add(2, wines.Count());
+
+            return drinkedList;
+        }
+    }
+}
+
